@@ -51,7 +51,7 @@ VALUE grpc_rb_byte_buffer_to_s(grpc_byte_buffer *buffer) {
   size_t length = 0;
   char *string = NULL;
   size_t offset = 0;
-  VALUE output_rb_string = NULL;
+  VALUE output_rb_string;
 
   grpc_byte_buffer_reader reader;
   gpr_slice next;
