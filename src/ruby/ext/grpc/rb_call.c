@@ -508,13 +508,13 @@ static void grpc_rb_op_update_status_from_server(grpc_op *op,
 
 /* GRPC_MAX_OPS_PER_BATCH is the maximum number of operations
    per run batch stack. */
-static const int GRPC_MAX_OPS_PER_BATCH = 8;
+static const size_t GRPC_MAX_OPS_PER_BATCH = 8;
 
 /* run_batch_stack holds various values used by the
  * grpc_rb_call_run_batch function */
 typedef struct run_batch_stack {
   /* The batch ops */
-  grpc_op ops[GRPC_MAX_OPS_PER_BATCH]; /* 8 is the maximum number of operations */
+  grpc_op ops[GRPC_MAX_OPS_PER_BATCH];
   size_t op_num;  /* tracks the last added operation */
 
   /* Data being sent */
@@ -547,6 +547,8 @@ static void grpc_run_batch_stack_init(run_batch_stack *st, uint write_flag) {
 /* grpc_run_batch_stack_cleanup ensures the run_batch_stack is properly
  * cleaned up */
 static void grpc_run_batch_stack_cleanup(run_batch_stack *st) {
+  size_t i = 0;
+
   grpc_metadata_array_destroy(&st->send_metadata);
   grpc_metadata_array_destroy(&st->send_trailing_metadata);
   grpc_metadata_array_destroy(&st->recv_metadata);
@@ -556,8 +558,8 @@ static void grpc_run_batch_stack_cleanup(run_batch_stack *st) {
     gpr_free(st->recv_status_details);
   }
 
-  for (int i = 0; i < GRPC_MAX_OPS_PER_BATCH; i++) {
-    if (st->ops[i].data.send_message != NULL) {
+  for (i = 0; i < GRPC_MAX_OPS_PER_BATCH; i++) {
+    if (st->ops[i].op == GRPC_OP_SEND_MESSAGE) {
       grpc_byte_buffer_destroy(st->ops[i].data.send_message);
     }
   }
