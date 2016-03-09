@@ -556,7 +556,7 @@ static void grpc_run_batch_stack_cleanup(run_batch_stack *st) {
     gpr_free(st->recv_status_details);
   }
 
-  for (int i = 0; i< GRPC_MAX_OPS_PER_BATCH; i++) {
+  for (int i = 0; i < GRPC_MAX_OPS_PER_BATCH; i++) {
     if (st->ops[i].data.send_message != NULL) {
       grpc_byte_buffer_destroy(st->ops[i].data.send_message);
     }
