@@ -506,15 +506,11 @@ static void grpc_rb_op_update_status_from_server(grpc_op *op,
   op->data.send_status_from_server.trailing_metadata = md_ary->metadata;
 }
 
-/* GRPC_MAX_OPS_PER_BATCH is the maximum number of operations
-   per run batch stack. */
-static const size_t GRPC_MAX_OPS_PER_BATCH = 8;
-
 /* run_batch_stack holds various values used by the
  * grpc_rb_call_run_batch function */
 typedef struct run_batch_stack {
   /* The batch ops */
-  grpc_op ops[GRPC_MAX_OPS_PER_BATCH];
+  grpc_op ops[8]; /* 8 is the maximum number of operations */
   size_t op_num;  /* tracks the last added operation */
 
   /* Data being sent */
